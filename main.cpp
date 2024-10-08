@@ -75,6 +75,36 @@ public:
     __int128 decrypt(__int128 ciphertext) {
         return modExp(ciphertext, privateKey, modulus);
     }
+private:
+    // Function to compute base^exp % mod efficiently
+    __int128 modExp(__int128 base, __int128 exp, __int128 mod) {
+        __int128 result = 1;
+        while (exp > 0) {
+            if (exp % 2 == 1) {
+                result = (result * base) % mod;
+            }
+            base = (base * base) % mod;
+            exp /= 2;
+        }
+        return result;
+    }
+
+    // Extended Euclidean Algorithm to find modular inverse
+    __int128 modInverse(__int128 a, __int128 m) {
+        __int128 m0 = m, t, q;
+        __int128 x0 = 0, x1 = 1;
+        if (m == 1) return 0;
+        while (a > 1) {
+            q = a / m;
+            t = m;
+            m = a % m, a = t;
+            t = x0;
+            x0 = x1 - q * x0;
+            x1 = t;
+        }
+        if (x1 < 0) x1 += m0;
+        return x1;
+    }
 };
 
 // Paillier Functions using __int128
